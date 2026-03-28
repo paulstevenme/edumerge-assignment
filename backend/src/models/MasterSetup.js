@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const masterSetupSchema = new mongoose.Schema(
   {
@@ -17,4 +17,4 @@ const masterSetupSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('MasterSetup', masterSetupSchema);
+export default mongoose.model('MasterSetup', masterSetupSchema);

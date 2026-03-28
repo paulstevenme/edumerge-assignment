@@ -1,6 +1,7 @@
-const express = require('express');
-const MasterSetup = require('../models/MasterSetup');
-const auth = require('../middleware/auth');
+import express from 'express';
+
+import auth from '../middleware/auth.js';
+import MasterSetup from '../models/MasterSetup.js';
 
 const router = express.Router();
 
@@ -14,4 +15,4 @@ router.get('/', auth(), async (_req, res) => {
   res.json(data);
 });
 
-module.exports = router;
+export default router;

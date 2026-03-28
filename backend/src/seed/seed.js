@@ -1,6 +1,7 @@
-require('dotenv').config();
-const connectDB = require('../config/db');
-const User = require('../models/User');
+import 'dotenv/config';
+
+import connectDB from '../config/db.js';
+import User from '../models/User.js';
 
 async function seed() {
   await connectDB();

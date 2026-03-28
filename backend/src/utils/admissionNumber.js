@@ -1,4 +1,4 @@
-const Admission = require('../models/Admission');
+import Admission from '../models/Admission.js';
 
 const pad = (num) => String(num).padStart(4, '0');
 
@@ -8,4 +8,4 @@ async function generateAdmissionNumber({ institutionCode, year, courseType, bran
   return `${prefix}/${pad(count + 1)}`;
 }
 
-module.exports = generateAdmissionNumber;
+export default generateAdmissionNumber;

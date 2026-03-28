@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const quotaSchema = new mongoose.Schema(
   {
@@ -30,4 +30,4 @@ const programSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Program', programSchema);
+export default mongoose.model('Program', programSchema);

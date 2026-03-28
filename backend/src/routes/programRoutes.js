@@ -1,6 +1,7 @@
-const express = require('express');
-const Program = require('../models/Program');
-const auth = require('../middleware/auth');
+import express from 'express';
+
+import auth from '../middleware/auth.js';
+import Program from '../models/Program.js';
 
 const router = express.Router();
 
@@ -27,4 +28,4 @@ router.get('/:id', auth(), async (req, res) => {
   res.json(program);
 });
 
-module.exports = router;
+export default router;

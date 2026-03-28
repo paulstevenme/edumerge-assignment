@@ -1,15 +1,15 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-const connectDB = require('./config/db');
+import 'dotenv/config';
+import cors from 'cors';
+import express from 'express';
+import morgan from 'morgan';
 
-const authRoutes = require('./routes/authRoutes');
-const masterRoutes = require('./routes/masterRoutes');
-const programRoutes = require('./routes/programRoutes');
-const applicantRoutes = require('./routes/applicantRoutes');
-const admissionRoutes = require('./routes/admissionRoutes');
-const dashboardRoutes = require('./routes/dashboardRoutes');
+import connectDB from './config/db.js';
+import admissionRoutes from './routes/admissionRoutes.js';
+import applicantRoutes from './routes/applicantRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
+import masterRoutes from './routes/masterRoutes.js';
+import programRoutes from './routes/programRoutes.js';
 
 const app = express();
 connectDB();
