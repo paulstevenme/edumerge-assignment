@@ -1,16 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const quotaSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      enum: ['KCET', 'COMEDK', 'Management'],
+      enum: ["KCET", "COMEDK", "Management"],
       required: true,
     },
     seats: { type: Number, required: true, min: 0 },
     filledSeats: { type: Number, default: 0, min: 0 },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const programSchema = new mongoose.Schema(
@@ -21,13 +21,13 @@ const programSchema = new mongoose.Schema(
     programName: { type: String, required: true },
     branchCode: { type: String, required: true, uppercase: true, trim: true },
     academicYear: { type: String, required: true },
-    courseType: { type: String, enum: ['UG', 'PG'], required: true },
-    entryType: { type: String, enum: ['Regular', 'Lateral'], required: true },
+    courseType: { type: String, enum: ["UG", "PG"], required: true },
+    entryType: { type: String, enum: ["Regular", "Lateral"], required: true },
     intake: { type: Number, required: true, min: 1 },
     quotas: { type: [quotaSchema], validate: (arr) => arr.length > 0 },
     supernumerarySeats: { type: Number, default: 0 },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export default mongoose.model('Program', programSchema);
+export default mongoose.model("Program", programSchema);

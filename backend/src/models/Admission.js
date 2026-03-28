@@ -1,21 +1,21 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const admissionSchema = new mongoose.Schema(
   {
     applicantId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Applicant',
+      ref: "Applicant",
       required: true,
       unique: true,
     },
     programId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Program',
+      ref: "Program",
       required: true,
     },
     quotaType: {
       type: String,
-      enum: ['KCET', 'COMEDK', 'Management'],
+      enum: ["KCET", "COMEDK", "Management"],
       required: true,
     },
     allotmentNumber: { type: String },
@@ -23,7 +23,7 @@ const admissionSchema = new mongoose.Schema(
     admissionNumber: { type: String, unique: true, sparse: true },
     confirmedAt: { type: Date },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export default mongoose.model('Admission', admissionSchema);
+export default mongoose.model("Admission", admissionSchema);

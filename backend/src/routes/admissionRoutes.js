@@ -1,15 +1,15 @@
-import express from 'express';
-import mongoose from 'mongoose';
+import express from "express";
+import mongoose from "mongoose";
 
-import Admission from '../models/Admission.js';
-import Applicant from '../models/Applicant.js';
-import auth from '../middleware/auth.js';
-import Program from '../models/Program.js';
-import generateAdmissionNumber from '../utils/admissionNumber.js';
+import Admission from "../models/Admission.js";
+import Applicant from "../models/Applicant.js";
+import auth from "../middleware/auth.js";
+import Program from "../models/Program.js";
+import generateAdmissionNumber from "../utils/admissionNumber.js";
 
 const router = express.Router();
 
-router.post('/allocate', auth(['ADMISSION_OFFICER']), async (req, res) => {
+router.post("/allocate", auth(["ADMISSION_OFFICER"]), async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -20,23 +20,23 @@ router.post('/allocate', auth(['ADMISSION_OFFICER']), async (req, res) => {
     const program = await Program.findById(programId).session(session);
 
     if (!applicant || !program) {
-      throw new Error('Applicant or Program not found');
+      throw new Error("Applicant or Program not found");
     }
 
     const existingAdmission = await Admission.findOne({ applicantId }).session(
       session,
     );
     if (existingAdmission) {
-      throw new Error('Seat already allocated for this applicant');
+      throw new Error("Seat already allocated for this applicant");
     }
 
     const quota = program.quotas.find((item) => item.type === quotaType);
-    if (!quota) throw new Error('Invalid quota type');
+    if (!quota) throw new Error("Invalid quota type");
     if (quota.filledSeats >= quota.seats)
-      throw new Error('Quota full. Seat allocation blocked');
+      throw new Error("Quota full. Seat allocation blocked");
 
     quota.filledSeats += 1;
-    applicant.admissionStatus = 'SEAT_LOCKED';
+    applicant.admissionStatus = "SEAT_LOCKED";
     await applicant.save({ session });
     await program.save({ session });
 
@@ -64,8 +64,8 @@ router.post('/allocate', auth(['ADMISSION_OFFICER']), async (req, res) => {
 });
 
 router.post(
-  '/confirm/:applicantId',
-  auth(['ADMISSION_OFFICER']),
+  "/confirm/:applicantId",
+  auth(["ADMISSION_OFFICER"]),
   async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -82,22 +82,22 @@ router.post(
       );
 
       if (!applicant || !admission || !program) {
-        throw new Error('Admission record not found');
+        throw new Error("Admission record not found");
       }
 
-      if (applicant.feeStatus !== 'Paid') {
-        throw new Error('Admission can be confirmed only if fee is paid');
+      if (applicant.feeStatus !== "Paid") {
+        throw new Error("Admission can be confirmed only if fee is paid");
       }
 
-      if (applicant.documentStatus !== 'Verified') {
-        throw new Error('Documents must be verified before confirmation');
+      if (applicant.documentStatus !== "Verified") {
+        throw new Error("Documents must be verified before confirmation");
       }
 
       if (admission.admissionNumber) {
-        throw new Error('Admission number already generated and immutable');
+        throw new Error("Admission number already generated and immutable");
       }
 
-      const institutionCode = (program.institution || 'INST')
+      const institutionCode = (program.institution || "INST")
         .slice(0, 4)
         .toUpperCase();
       const year = new Date().getFullYear();
@@ -111,14 +111,14 @@ router.post(
       });
       admission.confirmedAt = new Date();
 
-      applicant.admissionStatus = 'CONFIRMED';
+      applicant.admissionStatus = "CONFIRMED";
 
       await admission.save({ session });
       await applicant.save({ session });
 
       await session.commitTransaction();
       res.json({
-        message: 'Admission confirmed',
+        message: "Admission confirmed",
         admissionNumber: admission.admissionNumber,
       });
     } catch (error) {
@@ -130,10 +130,10 @@ router.post(
   },
 );
 
-router.get('/', auth(), async (_req, res) => {
+router.get("/", auth(), async (_req, res) => {
   const admissions = await Admission.find()
-    .populate('applicantId')
-    .populate('programId')
+    .populate("applicantId")
+    .populate("programId")
     .sort({ createdAt: -1 });
   res.json(admissions);
 });
