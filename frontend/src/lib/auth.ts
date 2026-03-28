@@ -9,8 +9,6 @@ export const roleLabels: Record<Role, string> = {
 };
 
 export function getStoredUser(): User | null {
-  if (typeof window === "undefined") return null;
-
   const rawUser = localStorage.getItem("user");
   if (!rawUser) return null;
 

@@ -1,9 +1,8 @@
-"use client";
+import { type FormEvent, useEffect, useState } from "react";
 
-import { FormEvent, useEffect, useState } from "react";
-import Protected from "../../components/Protected";
-import { getStoredUser, hasRole } from "../../lib/auth";
-import { apiFetch } from "../../lib/api";
+import Protected from "../components/Protected";
+import { apiFetch } from "../lib/api";
+import { getStoredUser, hasRole } from "../lib/auth";
 
 const initialForm = {
   firstName: "Rahul",
@@ -36,13 +35,14 @@ export default function ApplicantsPage() {
     apiFetch("/applicants")
       .then(setApplicants)
       .catch((err) => setError(err.message));
+
   useEffect(() => {
     setCanManageApplicants(hasRole(getStoredUser(), ["ADMISSION_OFFICER"]));
     fetchApplicants();
   }, []);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
     setMessage("");
     setError("");
     try {
@@ -84,10 +84,10 @@ export default function ApplicantsPage() {
                     "feeStatus",
                   ].includes(key) ? (
                     <select
-                      value={form[key]}
-                      onChange={(e) =>
-                        setForm({ ...form, [key]: e.target.value })
+                      onChange={(event) =>
+                        setForm({ ...form, [key]: event.target.value })
                       }
+                      value={form[key]}
                     >
                       {key === "gender" && (
                         <>
@@ -125,6 +125,15 @@ export default function ApplicantsPage() {
                     </select>
                   ) : (
                     <input
+                      onChange={(event) =>
+                        setForm({
+                          ...form,
+                          [key]:
+                            key === "marks"
+                              ? Number(event.target.value)
+                              : event.target.value,
+                        })
+                      }
                       type={
                         key === "dob"
                           ? "date"
@@ -133,15 +142,6 @@ export default function ApplicantsPage() {
                             : "text"
                       }
                       value={form[key]}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          [key]:
-                            key === "marks"
-                              ? Number(e.target.value)
-                              : e.target.value,
-                        })
-                      }
                     />
                   )}
                 </div>
@@ -195,6 +195,7 @@ export default function ApplicantsPage() {
                               documentStatus: "Verified",
                             })
                           }
+                          type="button"
                         >
                           Verify Docs
                         </button>
@@ -203,6 +204,7 @@ export default function ApplicantsPage() {
                           onClick={() =>
                             quickUpdate(item._id, { feeStatus: "Paid" })
                           }
+                          type="button"
                         >
                           Mark Fee Paid
                         </button>

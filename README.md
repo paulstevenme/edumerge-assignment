@@ -2,7 +2,7 @@
 
 This repository contains a minimal full-stack admission management system built with:
 
-- **Frontend:** Next.js
+- **Frontend:** React + Vite
 - **Backend:** Node.js + Express
 - **Database:** MongoDB Atlas
 
@@ -54,7 +54,7 @@ Backend runs on `http://localhost:5000`
 ```bash
 cd frontend
 npm install
-cp .env.example .env.local
+cp .env.example .env
 npm run dev
 ```
 

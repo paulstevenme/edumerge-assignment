@@ -1,9 +1,8 @@
-"use client";
+import { type FormEvent, useEffect, useState } from "react";
 
-import { FormEvent, useEffect, useState } from "react";
-import Protected from "../../components/Protected";
-import { getStoredUser, hasRole } from "../../lib/auth";
-import { apiFetch } from "../../lib/api";
+import Protected from "../components/Protected";
+import { apiFetch } from "../lib/api";
+import { getStoredUser, hasRole } from "../lib/auth";
 
 export default function AdmissionsPage() {
   const [applicants, setApplicants] = useState<any[]>([]);
@@ -29,10 +28,12 @@ export default function AdmissionsPage() {
       setApplicants(applicantData);
       setPrograms(programData);
       setAdmissions(admissionData);
-      if (applicantData[0] && !form.applicantId)
+      if (applicantData[0] && !form.applicantId) {
         setForm((prev) => ({ ...prev, applicantId: applicantData[0]._id }));
-      if (programData[0] && !form.programId)
+      }
+      if (programData[0] && !form.programId) {
         setForm((prev) => ({ ...prev, programId: programData[0]._id }));
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load");
     }
@@ -43,8 +44,8 @@ export default function AdmissionsPage() {
     loadAll();
   }, []);
 
-  const handleAllocate = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleAllocate = async (event: FormEvent) => {
+    event.preventDefault();
     setMessage("");
     setError("");
     try {
@@ -82,10 +83,10 @@ export default function AdmissionsPage() {
               <div className="field">
                 <label>Applicant</label>
                 <select
-                  value={form.applicantId}
-                  onChange={(e) =>
-                    setForm({ ...form, applicantId: e.target.value })
+                  onChange={(event) =>
+                    setForm({ ...form, applicantId: event.target.value })
                   }
+                  value={form.applicantId}
                 >
                   {applicants
                     .filter((item) => item.admissionStatus === "APPLIED")
@@ -99,10 +100,10 @@ export default function AdmissionsPage() {
               <div className="field">
                 <label>Program</label>
                 <select
-                  value={form.programId}
-                  onChange={(e) =>
-                    setForm({ ...form, programId: e.target.value })
+                  onChange={(event) =>
+                    setForm({ ...form, programId: event.target.value })
                   }
+                  value={form.programId}
                 >
                   {programs.map((item) => (
                     <option key={item._id} value={item._id}>
@@ -114,10 +115,10 @@ export default function AdmissionsPage() {
               <div className="field">
                 <label>Quota</label>
                 <select
-                  value={form.quotaType}
-                  onChange={(e) =>
-                    setForm({ ...form, quotaType: e.target.value })
+                  onChange={(event) =>
+                    setForm({ ...form, quotaType: event.target.value })
                   }
+                  value={form.quotaType}
                 >
                   <option>KCET</option>
                   <option>COMEDK</option>
@@ -127,10 +128,10 @@ export default function AdmissionsPage() {
               <div className="field">
                 <label>Allotment Number</label>
                 <input
-                  value={form.allotmentNumber}
-                  onChange={(e) =>
-                    setForm({ ...form, allotmentNumber: e.target.value })
+                  onChange={(event) =>
+                    setForm({ ...form, allotmentNumber: event.target.value })
                   }
+                  value={form.allotmentNumber}
                 />
               </div>
               {message ? <div className="success">{message}</div> : null}
@@ -177,6 +178,7 @@ export default function AdmissionsPage() {
                       <button
                         className="btn"
                         onClick={() => confirmAdmission(item.applicantId?._id)}
+                        type="button"
                       >
                         Confirm Admission
                       </button>

@@ -1,49 +1,46 @@
-"use client";
+import { type FormEvent, useEffect, useState } from 'react';
 
-import { FormEvent, useEffect, useState } from "react";
-import Protected from "../../components/Protected";
-import { getStoredUser, hasRole } from "../../lib/auth";
-import { apiFetch } from "../../lib/api";
+import Protected from '../components/Protected';
+import { apiFetch } from '../lib/api';
+import { getStoredUser, hasRole } from '../lib/auth';
 
 const initialForm = {
-  institution: "EduMerge",
-  campus: "Main Campus",
-  department: "Computer Science",
-  academicYear: "2026-2027",
-  courseType: "UG",
-  entryType: "Regular",
-  admissionMode: "Government",
+  institution: 'EduMerge',
+  campus: 'Main Campus',
+  department: 'Computer Science',
+  academicYear: '2026-2027',
+  courseType: 'UG',
+  entryType: 'Regular',
+  admissionMode: 'Government',
 };
 
 export default function MastersPage() {
   const [form, setForm] = useState<any>(initialForm);
   const [masters, setMasters] = useState<any[]>([]);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
   const [canEdit, setCanEdit] = useState(false);
 
-  const loadMasters = () =>
-    apiFetch("/masters")
-      .then(setMasters)
-      .catch((err) => setError(err.message));
+  const loadMasters = () => apiFetch('/masters').then(setMasters).catch((err) => setError(err.message));
+
   useEffect(() => {
-    setCanEdit(hasRole(getStoredUser(), ["ADMIN"]));
+    setCanEdit(hasRole(getStoredUser(), ['ADMIN']));
     loadMasters();
   }, []);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setMessage("");
-    setError("");
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setMessage('');
+    setError('');
     try {
-      await apiFetch("/masters", {
-        method: "POST",
+      await apiFetch('/masters', {
+        method: 'POST',
         body: JSON.stringify(form),
       });
-      setMessage("Master setup saved");
+      setMessage('Master setup saved');
       loadMasters();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed");
+      setError(err instanceof Error ? err.message : 'Failed');
     }
   };
 
@@ -54,26 +51,20 @@ export default function MastersPage() {
         {canEdit ? (
           <div className="card">
             <form className="grid grid-2" onSubmit={handleSubmit}>
-              {["institution", "campus", "department", "academicYear"].map(
-                (key) => (
-                  <div className="field" key={key}>
-                    <label>{key}</label>
-                    <input
-                      value={form[key]}
-                      onChange={(e) =>
-                        setForm({ ...form, [key]: e.target.value })
-                      }
-                    />
-                  </div>
-                ),
-              )}
+              {['institution', 'campus', 'department', 'academicYear'].map((key) => (
+                <div className="field" key={key}>
+                  <label>{key}</label>
+                  <input
+                    onChange={(event) => setForm({ ...form, [key]: event.target.value })}
+                    value={form[key]}
+                  />
+                </div>
+              ))}
               <div className="field">
                 <label>Course Type</label>
                 <select
+                  onChange={(event) => setForm({ ...form, courseType: event.target.value })}
                   value={form.courseType}
-                  onChange={(e) =>
-                    setForm({ ...form, courseType: e.target.value })
-                  }
                 >
                   <option>UG</option>
                   <option>PG</option>
@@ -82,10 +73,8 @@ export default function MastersPage() {
               <div className="field">
                 <label>Entry Type</label>
                 <select
+                  onChange={(event) => setForm({ ...form, entryType: event.target.value })}
                   value={form.entryType}
-                  onChange={(e) =>
-                    setForm({ ...form, entryType: e.target.value })
-                  }
                 >
                   <option>Regular</option>
                   <option>Lateral</option>
@@ -94,10 +83,8 @@ export default function MastersPage() {
               <div className="field">
                 <label>Admission Mode</label>
                 <select
+                  onChange={(event) => setForm({ ...form, admissionMode: event.target.value })}
                   value={form.admissionMode}
-                  onChange={(e) =>
-                    setForm({ ...form, admissionMode: e.target.value })
-                  }
                 >
                   <option>Government</option>
                   <option>Management</option>
@@ -113,9 +100,7 @@ export default function MastersPage() {
             </form>
           </div>
         ) : (
-          <div className="card">
-            Only Admin can set up masters. Your role has read-only access here.
-          </div>
+          <div className="card">Only Admin can set up masters. Your role has read-only access here.</div>
         )}
         <div className="card">
           <h3>Saved Master Records</h3>

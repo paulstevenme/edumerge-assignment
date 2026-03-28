@@ -1,24 +1,23 @@
-"use client";
+import { type FormEvent, useEffect, useState } from 'react';
 
-import { FormEvent, useEffect, useState } from "react";
-import Protected from "../../components/Protected";
-import { getStoredUser, hasRole } from "../../lib/auth";
-import { apiFetch } from "../../lib/api";
+import Protected from '../components/Protected';
+import { apiFetch } from '../lib/api';
+import { getStoredUser, hasRole } from '../lib/auth';
 
 const initialForm = {
-  institution: "EduMerge",
-  campus: "Main Campus",
-  department: "Computer Science",
-  programName: "B.E Computer Science",
-  branchCode: "CSE",
-  academicYear: "2026-2027",
-  courseType: "UG",
-  entryType: "Regular",
+  institution: 'EduMerge',
+  campus: 'Main Campus',
+  department: 'Computer Science',
+  programName: 'B.E Computer Science',
+  branchCode: 'CSE',
+  academicYear: '2026-2027',
+  courseType: 'UG',
+  entryType: 'Regular',
   intake: 60,
   quotas: [
-    { type: "KCET", seats: 30 },
-    { type: "COMEDK", seats: 20 },
-    { type: "Management", seats: 10 },
+    { type: 'KCET', seats: 30 },
+    { type: 'COMEDK', seats: 20 },
+    { type: 'Management', seats: 10 },
   ],
   supernumerarySeats: 0,
 };
@@ -26,33 +25,31 @@ const initialForm = {
 export default function ProgramsPage() {
   const [form, setForm] = useState<any>(initialForm);
   const [programs, setPrograms] = useState<any[]>([]);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
   const [canEdit, setCanEdit] = useState(false);
 
-  const fetchPrograms = () =>
-    apiFetch("/programs")
-      .then(setPrograms)
-      .catch((err) => setError(err.message));
+  const fetchPrograms = () => apiFetch('/programs').then(setPrograms).catch((err) => setError(err.message));
+
   useEffect(() => {
-    setCanEdit(hasRole(getStoredUser(), ["ADMIN"]));
+    setCanEdit(hasRole(getStoredUser(), ['ADMIN']));
     fetchPrograms();
   }, []);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setMessage("");
-    setError("");
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setMessage('');
+    setError('');
     try {
-      await apiFetch("/programs", {
-        method: "POST",
+      await apiFetch('/programs', {
+        method: 'POST',
         body: JSON.stringify(form),
       });
-      setMessage("Program created successfully");
+      setMessage('Program created successfully');
       setForm(initialForm);
       fetchPrograms();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed");
+      setError(err instanceof Error ? err.message : 'Failed');
     }
   };
 
@@ -69,31 +66,20 @@ export default function ProgramsPage() {
         {canEdit ? (
           <div className="card">
             <form className="grid grid-2" onSubmit={handleSubmit}>
-              {[
-                "institution",
-                "campus",
-                "department",
-                "programName",
-                "branchCode",
-                "academicYear",
-              ].map((key) => (
+              {['institution', 'campus', 'department', 'programName', 'branchCode', 'academicYear'].map((key) => (
                 <div className="field" key={key}>
                   <label>{key}</label>
                   <input
+                    onChange={(event) => setForm({ ...form, [key]: event.target.value })}
                     value={form[key]}
-                    onChange={(e) =>
-                      setForm({ ...form, [key]: e.target.value })
-                    }
                   />
                 </div>
               ))}
               <div className="field">
                 <label>Course Type</label>
                 <select
+                  onChange={(event) => setForm({ ...form, courseType: event.target.value })}
                   value={form.courseType}
-                  onChange={(e) =>
-                    setForm({ ...form, courseType: e.target.value })
-                  }
                 >
                   <option>UG</option>
                   <option>PG</option>
@@ -102,10 +88,8 @@ export default function ProgramsPage() {
               <div className="field">
                 <label>Entry Type</label>
                 <select
+                  onChange={(event) => setForm({ ...form, entryType: event.target.value })}
                   value={form.entryType}
-                  onChange={(e) =>
-                    setForm({ ...form, entryType: e.target.value })
-                  }
                 >
                   <option>Regular</option>
                   <option>Lateral</option>
@@ -114,20 +98,18 @@ export default function ProgramsPage() {
               <div className="field">
                 <label>Intake</label>
                 <input
+                  onChange={(event) => setForm({ ...form, intake: Number(event.target.value) })}
                   type="number"
                   value={form.intake}
-                  onChange={(e) =>
-                    setForm({ ...form, intake: Number(e.target.value) })
-                  }
                 />
               </div>
               {form.quotas.map((quota: any, index: number) => (
                 <div className="field" key={quota.type}>
                   <label>{quota.type} Seats</label>
                   <input
+                    onChange={(event) => updateQuota(index, Number(event.target.value))}
                     type="number"
                     value={quota.seats}
-                    onChange={(e) => updateQuota(index, Number(e.target.value))}
                   />
                 </div>
               ))}
@@ -141,10 +123,7 @@ export default function ProgramsPage() {
             </form>
           </div>
         ) : (
-          <div className="card">
-            Only Admin can configure programs and quotas. Your role has
-            read-only access here.
-          </div>
+          <div className="card">Only Admin can configure programs and quotas. Your role has read-only access here.</div>
         )}
 
         <div className="card">
@@ -162,11 +141,7 @@ export default function ProgramsPage() {
                 <tr key={item._id}>
                   <td>{item.programName}</td>
                   <td>{item.intake}</td>
-                  <td>
-                    {item.quotas
-                      .map((q: any) => `${q.type}: ${q.filledSeats}/${q.seats}`)
-                      .join(" | ")}
-                  </td>
+                  <td>{item.quotas.map((quota: any) => `${quota.type}: ${quota.filledSeats}/${quota.seats}`).join(' | ')}</td>
                 </tr>
               ))}
             </tbody>
