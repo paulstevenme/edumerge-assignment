@@ -63,16 +63,37 @@ Frontend runs on `http://localhost:3000`
 ## Demo Credentials
 
 ### Admin
+
 - Email: `admin@edumerge.local`
 - Password: `Admin123!`
 
 ### Admission Officer
+
 - Email: `officer@edumerge.local`
 - Password: `Officer123!`
 
 ### Management
+
 - Email: `management@edumerge.local`
 - Password: `Management123!`
+
+## Role Matrix
+
+### Admin
+
+- Setup masters
+- Configure programs and quotas
+
+### Admission Officer
+
+- Create applicants
+- Allocate seats
+- Verify documents
+- Confirm admissions
+
+### Management
+
+- View-only access across dashboard, masters, programs, applicants, and admissions
 
 ## Business Rules Covered
 
@@ -94,6 +115,7 @@ Frontend runs on `http://localhost:3000`
 AI assistance used: **ChatGPT**
 
 AI-assisted parts:
+
 - Initial project scaffolding
 - API and frontend boilerplate generation
 - README drafting
