@@ -18,7 +18,27 @@ router.post("/", auth(["ADMIN"]), async (req, res) => {
       .json({ message: "Total base quota must equal intake" });
   }
 
-  const program = await Program.create(req.body);
+  const duplicateProgram = await Program.findOne({
+    institution: req.body.institution?.trim(),
+    campus: req.body.campus?.trim(),
+    department: req.body.department?.trim(),
+    programName: req.body.programName?.trim(),
+    branchCode: req.body.branchCode?.trim().toUpperCase(),
+    academicYear: req.body.academicYear?.trim(),
+    courseType: req.body.courseType,
+    entryType: req.body.entryType,
+  });
+
+  if (duplicateProgram) {
+    return res.status(409).json({
+      message: "Program already exists for the same academic setup",
+    });
+  }
+
+  const program = await Program.create({
+    ...req.body,
+    branchCode: req.body.branchCode?.trim().toUpperCase(),
+  });
   res.status(201).json(program);
 });
 

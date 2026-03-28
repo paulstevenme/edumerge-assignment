@@ -15,12 +15,12 @@ const quotaSchema = new mongoose.Schema(
 
 const programSchema = new mongoose.Schema(
   {
-    institution: { type: String, required: true },
-    campus: { type: String, required: true },
-    department: { type: String, required: true },
-    programName: { type: String, required: true },
+    institution: { type: String, required: true, trim: true },
+    campus: { type: String, required: true, trim: true },
+    department: { type: String, required: true, trim: true },
+    programName: { type: String, required: true, trim: true },
     branchCode: { type: String, required: true, uppercase: true, trim: true },
-    academicYear: { type: String, required: true },
+    academicYear: { type: String, required: true, trim: true },
     courseType: { type: String, enum: ["UG", "PG"], required: true },
     entryType: { type: String, enum: ["Regular", "Lateral"], required: true },
     intake: { type: Number, required: true, min: 1 },
